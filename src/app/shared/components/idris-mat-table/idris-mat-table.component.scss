@@ -1,0 +1,21 @@
+tr.table-row {
+  :hover{
+    background-color: rgba(3, 254, 250, 0.08);
+  }
+  td {
+    font-size: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .selected {
+    background-color: #ce3e3c !important;
+    *{
+      color: white;
+    }
+  }
+}
+table{
+  padding: .50em;
+  margin: .50em;
+}

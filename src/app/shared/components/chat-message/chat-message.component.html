@@ -1,0 +1,10 @@
+<div align="left" style=" width: 100%; justify-content: left; align-items: baseline; align-self: self-start">
+  <span>
+      {{msg.fromChatUser.userName}} :
+  </span>
+  <span
+    [ngClass]=
+      "{'other-msg-important':important && !isOwnerOfMsg, 'other-msg': !important && !isOwnerOfMsg, 'owner-msg': isOwnerOfMsg}">
+    {{msg.message}}
+  </span>
+</div>

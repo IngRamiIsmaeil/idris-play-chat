@@ -1,0 +1,22 @@
+#bottom-footer{
+  width: 100%;
+  height: 100%;
+  background-color: #f3f6f8 !important;
+  z-index: 5008 !important;
+  border-top: #3e3e3e 2px solid !important;
+  .footer-row {
+    padding: 0;
+    margin: 0px;
+    display: grid;
+  }
+  .center-footer-part {
+    color: #353055 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .center-footer-part > span > i{
+    color: #353055 !important;
+  }
+}
+

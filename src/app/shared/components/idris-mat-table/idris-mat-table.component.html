@@ -1,0 +1,71 @@
+<div class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12" [ngStyle]="{'justify-content': 'center'}">
+  <div class="ui-grid-col-10 ui-lg-10">
+    <div class="ui-grid">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-12 ui-lg-3">
+          <mat-form-field>
+            <input matInput (keyup)="applyGlobalFilter($event.target.value)" placeholder="Global Filter">
+          </mat-form-field>
+        </div>
+      </div>
+      <div id="mTableContent" class="ui-grid-row">
+        <table mat-table [dataSource]="dataSource" matSort class="ui-grid-col12 ui-lg-12">
+          <template *ngFor="let col of materialTableColumnsField; let i = index">
+            <ng-container matColumnDef="{{col}}">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header
+                  class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12">
+                {{getColumnsHeader(col)}}
+              </th>
+              <td mat-cell *matCellDef="let row" [satPopoverAnchorFor]="pRow"
+                  class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12"
+                  (click)="p.open()" (contextmenu)="onContextMenu_2(pRow, $event)">
+                <span [satPopoverAnchorFor]="p" >
+                  {{row[col]}}
+                  <sat-popover #p hasBackdrop xAlign="start" yAlign="start" (closed)="update(row, col, $event)">
+                  <idrisgames-edit-cell [value]="row[col]" [forColumn]="col"></idrisgames-edit-cell>
+                </sat-popover>
+                </span>
+
+                <sat-popover #pRow hasBackdrop xAlign="start" yAlign="start">
+                  <idrisgames-row-context-menu [contextMenuItems]="getContextMenuItems()"></idrisgames-row-context-menu>
+                </sat-popover>
+              </td>
+            </ng-container>
+          </template>
+          <template *ngFor="let col of materialTableColumnFilters; let i = index">
+            <ng-container matColumnDef="{{col}}">
+              <th mat-header-cell *matHeaderCellDef class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12">
+                <mat-form-field>
+                  <input matInput (keyup)="applyColumnsFilter($event.target.value, col)"
+                         placeholder="Filter {{getFilterColumnName(col)}}">
+                </mat-form-field>
+              </th>
+            </ng-container>
+          </template>
+          <thead>
+          <tr mat-header-row *matHeaderRowDef="materialTableColumnsField"
+              class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12 "></tr>
+          <tr mat-header-row *matHeaderRowDef="materialTableColumnFilters"
+              class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12"></tr>
+          </thead>
+          <tbody #container>
+            <tr
+              mat-row #tableRow *matRowDef="let row; columns: materialTableColumnsField"
+              [ngStyle]="{'background-color': getRowBackgroundColor(row)}"
+              class="ui-grid ui-grid-row ui-grid-col-12 ui-lg-12 table-row"
+            >
+            </tr>
+          </tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col12 ui-lg-12 ">
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+    <!--<p-contextMenu #cm  [model]="getContextMenuItems()"></p-contextMenu>-->
+  </div>
+</div>
+

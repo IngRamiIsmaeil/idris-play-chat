@@ -1,0 +1,27 @@
+<div id="bottom-footer" class="ui-grid">
+  <div class="ui-grid-row">
+    <div class="ui-grid-col-12 ui-lg-12 footer-row ">
+      <p-toolbar>
+        <div class="ui-grid">
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+              <div class="ui-grid-col-3 ui-lg-3" align="left" >
+                <button pButton type="button" pTooltip="{{this.loginLabel}}" tooltipZIndex="900000" icon="{{loginService.buttonIcon}}"
+                        (click)="loginService.toggleLogInOut()"></button>
+
+
+              </div>
+              <div class="ui-grid-col-6 ui-lg-6 center-footer-part" align="center">
+                <span class="wraps-word">{{ loginService.addressingUser | i18Translate:[loginService.bottomNaming, ''] }}</span>
+              </div>
+              <div class="ui-grid-col-3 ui-lg-3" align="right">
+                <button pButton type="button" icon="fa fa-fw fa-refresh" pTooltip="{{this.refreshLabel}}" tooltipZIndex="900000" ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-toolbar>
+    </div>
+  </div>
+</div>
+<idrisgames-login></idrisgames-login>

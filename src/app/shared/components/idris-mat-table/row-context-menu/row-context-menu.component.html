@@ -1,0 +1,6 @@
+
+<div class="full-width" *ngFor="let parentMenu of contextMenuItems">
+  <button  mat-raised-button [ngStyle]="{'width': '100%', 'border': 'none'}"
+           (click)="parentMenu.command()">{{parentMenu.label}}</button>
+</div>
+

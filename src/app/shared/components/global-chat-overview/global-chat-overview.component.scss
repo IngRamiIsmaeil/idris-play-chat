@@ -1,0 +1,13 @@
+.chat-button {
+  text-transform: capitalize;
+  width: 120px;
+  height: 2.2em;
+}
+.chat-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-input > * {
+  width: 100%;
+}

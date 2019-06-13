@@ -1,0 +1,46 @@
+<p-panel>
+  <p-header>
+    <h2>ChatVersion (2)</h2>
+  </p-header>
+  <p-scrollPanel [style]="{width: '100%', height: '250px'}">
+    <div class="ui-g-nopad">
+      <div align="center" class="ui-g-12" *ngFor="let m of chatService.messages$ | async" >
+        <idrisgames-chat-message
+
+          [msg]="m"
+          [isOwnerOfMsg]="nickName  === m.fromChatUser.userName"
+          [important]="false">
+
+        </idrisgames-chat-message>
+      </div>
+    </div>
+  </p-scrollPanel>
+  <p-footer>
+    <!--<div class="ui-g-12" *ngIf="!registered">
+      <div class="ui-g-12 ui-md-6" align="right">
+        <div class="chat-input">
+          <mat-form-field>
+            <input matInput placeholder="Benutzer Email"  required [(ngModel)]="nickName"
+                   (keydown.enter)="toggleRegistration();">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="ui-g-12 ui-md-3"></div>
+    </div>-->
+    <div *ngIf="registered" class="ui-g-12">
+      <div class="ui-g-12 ui-lg-10" align="center">
+        <div class="chat-input">
+          <mat-form-field>
+            <input matInput placeholder="{{this.nickName}} sende globale Nachricht" [(ngModel)]="message"
+                   (keydown.enter)="sendMessage();">
+            <mat-error *ngIf="message && message.length === 1">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </p-footer>
+
+</p-panel>
+
+

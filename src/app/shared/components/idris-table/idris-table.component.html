@@ -1,0 +1,208 @@
+<p-table
+  #dt
+  id="idris-table"
+  (window:resize)="this.resize($event, 20)"
+  [contextMenu]="cm"
+  [columns]="tableService.selectedColumns"
+  [value]="tableService.rowData"
+  [pageLinks]="5"
+  [scrollable]="true"
+  [scrollHeight]="this.tableMaxHeight||'235px'"
+  [virtualScroll]="true"
+  [(selection)]="tableService.selectedRows"
+  [sortMode]="'multiple'"
+  (onSort)="null"
+  [paginator]="true"
+  [rows]="tableService.numOfRowsPaginator"
+  [pageLinks]="'5'"
+  [rowsPerPageOptions]="[10, 25, 50, 100, 150, 200, 500, 750, 1000]"
+  [responsive]="false"
+  [resizableColumns]="true"
+
+  [(contextMenuSelection)]="tableService.selectRow"
+  (onContextMenuSelect)="tableService.selectedRowRightClick($event)"
+  (onPage)="null"
+  (sortFunction)="null"
+  [columnResizeMode]="'expand'"
+  [customSort]="false"
+  [rowHover]="true"
+  [reorderableColumns]="true"
+  [loading]="tableService.loading"
+>
+  <ng-template pTemplate="caption">
+    <div class="ui-g">
+      <div class="ui-g-12 small-padding">
+        <form>
+          <fieldset>
+            <legend>Table Operation:</legend>
+            <div class="ui-g-6 no-paddng" align="left">
+                  <span>
+                    <button class="ui-button-text-icon-left margin-element"
+                            icon="fa fa-download"
+                            pButton type="button"
+                            label="Export" (click)="null"></button>
+                  </span>
+              <span class="custom-upload">
+                    <p-fileUpload mode="basic" name="myfile[]" class="ui-button-danger margin-element"
+                                  accept="image/*" [ngStyle]="{'display':'inline-grid'}"
+                                  [maxFileSize]="10000000" (onSelect)="null"
+                                  [auto]="true" icon="fa-upload" iconpos="left" chooseLabel="Import">
+                    </p-fileUpload>
+                  </span>
+
+            </div>
+            <div class="ui-g-6 no-padding" align="right">
+              <button class="ui-button-warning margin-element" pButton type="button"
+                      label="Reset" (click)="null"></button>
+              <button class="ui-button-success margin-element"
+                      pButton type="button"
+                      label="Save" (click)="null"></button>
+
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-12 small-padding">
+        <div class="ui-g-3 no-paddng" align="left">
+          <app-input-with-icon icon="search" fontSize="1.1em">
+            <input #gl pInputText appInputWithIcon type="text" style="font-size: 1em"
+                   autocomplete="off"
+                   placeholder="Globale Filter"
+                   (input)="doGlobaleFilter(dt, $event, 'contains')"/>
+          </app-input-with-icon>
+        </div>
+        <div class="ui-g-9 no-paddng" align="left"></div>
+      </div>
+      <div class="ui-g-12 small-padding">
+        <div class="ui-g-6 no-padding" align="left">
+          <button class="ui-button-text-icon-left margin-element" icon="fa fa-eraser"
+                  pButton type="button"
+                  label="Rest Filter" (click)="resetFilter(dt, gl)"></button>
+          <p-checkbox label="Selected Only" class="margin-element"
+                      binary="true" [(ngModel)]="selectedDataExport"></p-checkbox>
+        </div>
+        <div class="ui-g-6 no-padding" align="right">
+          <label class="margin-element select-col-lab">Show Columns</label>
+          <p-multiSelect class="btn-2em" [options]="this.tableService.columnDefs"
+                         [(ngModel)]="this.tableService.selectedColumns" optionLabel="header"
+                         selectedItemsLabel="{0} columns selected"
+                         defaultLabel="Choose Columns"
+          >
+          </p-multiSelect>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="colgroup" let-columns>
+    <colgroup>
+      <col *ngIf="multiselect" [style.width]="'24px'">
+      <col *ngFor="let col of columns" [style.width]="col?.width">
+    </colgroup>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th rowspan="3" align="right" [style.width]="'60px'" [style.padding]=" '.25em'">
+        <div *ngIf="multiselect && !tableService.isHeaderCheckboxHidden(dt); then tableMuliSelectHeader; else tableCustomMultiSelect" ></div>
+      </th>
+      <ng-template #tableMuliSelectHeader>
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </ng-template>
+      <ng-template #tableCustomMultiSelect>
+        <p-checkbox (onChange)="tableService.customSelectSame(dt)"></p-checkbox>
+      </ng-template>
+      <th *ngFor="let col of columns" [pSortableColumn]="col?.field"
+          [style.width]="col?.width" pResizableColumn>
+        {{col.header}}
+        <p-sortIcon [field]="col?.field"></p-sortIcon>
+      </th>
+    </tr>
+
+    <tr>
+      <th *ngFor="let col of columns">
+        <p-dropdown [options]="filterMatchModes"[style]="{'width': '100%'}"
+                    (onChange)="changeFilterMatchMode(dt, col, $event)">
+        </p-dropdown>
+      </th>
+    </tr>
+
+    <tr>
+      <th *ngFor="let col of columns" [ngSwitch]="col?.filterMatchMode">
+        <input *ngIf="col?.filterMatchMode != 'in'" pInputText type="text"
+               class="ui-inputtext" [(ngModel)]="col.filter" (input)="doFilter(dt, col)">
+        <p-multiSelect *ngSwitchCase="'in'"
+                       [options]="col?.uniqueValues" defaultLabel="all" [(ngModel)]="col.filter"
+                       (onChange)="doFilter(dt, col)">
+
+        </p-multiSelect>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+    <tr id="row_{{rowIndex}}"
+        [pSelectableRow]="rowData" [pContextMenuRow]="rowData"
+        (click)="tableService.getMetaData($event, rowData)" [ngClass]="tableService.getRowStyle(rowData)">
+      <td [style.width]="'60px'" [style.padding]=" '.25em'"
+          *ngIf="multiselect && !tableService.isThisCheckBoxDisabled(rowData); then withSelection; else withNoSelection" class="multiselect-column">
+
+      </td>
+      <ng-template #withSelection>
+        <p-tableCheckbox [value]="rowData" [disabled]="tableService.isThisCheckBoxDisabled(rowData)">
+        </p-tableCheckbox>
+      </ng-template>
+      <ng-template #withNoSelection>
+        <div class="center-icon" align="center">
+          <i class="fa fa-minus-square"></i>
+        </div>
+      </ng-template>
+      <ng-container *ngFor="let col of columns" [ngSwitch]="col?.pipe">
+        <td id="cell_{{rowIndex}}_{{col?.field}}"
+            [class]="col?.styleClass"
+            (mouseover)="null"
+            (click)="tableService.editInit(rowData, col, rowIndex)"
+            pEditableColumn
+            [ngClass]="tableService.defineCellStyle(rowData, col)"
+            pTooltip="{{rowData.error['col.field'] || rowData.warning['col.field']}}"
+            [showDelay]="1000" [hideDelay]="500"
+            [attr.rowspan]="col?.rowspan"
+            [attr.tabindex]="null"
+            (keydown)="null">
+          <ng-container *ngTemplateOutlet="tableData"></ng-container>
+          <ng-template #tableData>
+            <span *ngIf class="ui-columns-title">{{col.header}}</span>
+            <span *ngSwitchCase="''">
+                <span *ngIf="col.editable; then cellEditable; else cellNotEditable" ></span>
+              </span>
+          </ng-template>
+          <ng-template #cellEditable>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input class="clear-input" #inp type="text"
+                       [disabled]="rowData['toDelete']" [(ngModel)]="rowData[col.field]"
+                       (keydown.tab)="tableService.editComplete(rowData, col, $event)"
+                       (blur)="tableService.editComplete(rowData, col, $event)"
+                       (keydown.esc)="tableService.editCancle(rowData, col, $event)"
+                       (focus)="tableService.selectInput(inp, rowIndex, col.field)">
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{rowData[col.field]}}
+              </ng-template>
+            </p-cellEditor>
+          </ng-template>
+          <ng-template #cellNotEditable>
+            <div>
+              {{rowData[col.field]}}
+            </div>
+          </ng-template>
+        </td>
+      </ng-container>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-toast [style]="{marginTop: '80px'}" position="top-left" key="tidris"></p-toast>
+<p-contextMenu #cm [model]="tableService.contextMenuItems"></p-contextMenu>

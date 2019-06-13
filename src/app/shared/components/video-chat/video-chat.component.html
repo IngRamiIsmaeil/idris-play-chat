@@ -1,0 +1,32 @@
+<div class="ui-grid">
+  <div class="ui-grid-row">
+    <div class="ui-grid-col-12 ui-lg-12">
+      <video [ngClass]="{'hide-video-player': !showVideoPlayer}" class="video-rec" #recVideo autoplay muted></video>
+
+    </div>
+  </div>
+  <div class="ui-grid-row mat-button-row">
+    <div class="ui-grid-col-12 ui-lg-8">
+      <div class="ui-grid-col-3 ui-lg-3">
+        <button mat-fab color="primary" [disabled]=isRecordingRunning (click)="start()"  matTooltip="Start Video Recording">
+          <mat-icon aria-label="Start Video Recording">videocam</mat-icon>
+        </button>
+      </div>
+      <div class="ui-grid-col-3 ui-lg-3">
+        <button mat-fab color="primary" [disabled]=!isRecordingRunning (click)="stop()"  matTooltip="Start Video Recording">
+          <mat-icon aria-label="Stop Video Recording">videocam_off</mat-icon>
+        </button>
+      </div>
+      <div class="ui-grid-col-3 ui-lg-3">
+        <button mat-fab [disabled]=false (click)="play()"  matTooltip="Play reordered Video">
+          <mat-icon aria-label="Play reordered Video">subscriptions</mat-icon>
+        </button>
+      </div>
+      <div class="ui-grid-col-3 ui-lg-3">
+        <button mat-fab color="warn" [disabled]=false (click)="download()"  matTooltip="Save reordered Video">
+          <mat-icon aria-label="Save reordered Video">save_alt</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<form (ngSubmit)="onSubmit()">
+  <div class="mat-subheading-2">{{getTitle()}}</div>
+  <mat-form-field>
+    <input matInput maxlength="140" name="formValue"  [(ngModel)]="formValue">
+    <mat-hint align="end">{{formValue?.length || 0}}/140</mat-hint>
+  </mat-form-field>
+  <div class="actions">
+    <button mat-mini-fab type="button" color="accent" (click)="onCancel()" matTooltip="{{cancelBtnToolTip}}">
+      <mat-icon>cancel</mat-icon>
+    </button>
+    <button [ngStyle]="{'margin-left': '5px'}" mat-mini-fab type="submit" color="primary" matTooltip="{{saveBtnToolTip}}">
+      <mat-icon>save</mat-icon>
+
+    </button>
+  </div>
+</form>
